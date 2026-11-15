@@ -63,7 +63,6 @@ model ProductImage {
 model DeliveryZone {
   id        Int     @id @default(autoincrement())
   name      String
-  fee       Int // UGX
   note      String  @default("")
   upcountry Boolean @default(false)
   active    Boolean @default(true)
@@ -98,7 +97,7 @@ model Order {
   discount      Int           @default(0)
   discountLabel String        @default("")
   discountCode  String        @default("")
-  deliveryFee   Int
+  deliveryFee   Int? // null = not agreed yet (agreed on WhatsApp / paid to the rider)
   total         Int
   items         OrderItem[]
   createdAt     DateTime      @default(now())

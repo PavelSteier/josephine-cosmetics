@@ -10,7 +10,7 @@ export default async function SettingsPage() {
     <div className="space-y-4">
       <h1 className="font-display text-2xl text-gold-light">Settings</h1>
       <Link href="/admin/delivery" className="card flex items-center justify-between p-4 hover:border-gold">
-        <span>🛵 Delivery areas & prices</span>
+        <span>🛵 Delivery areas</span>
         <span className="text-muted">›</span>
       </Link>
       <SettingsForm s={{ ...s, whatsappNumber: displayPhone(s.whatsappNumber), momoNumber: displayPhone(s.momoNumber) }} />

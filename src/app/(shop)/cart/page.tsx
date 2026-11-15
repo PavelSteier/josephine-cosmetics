@@ -48,7 +48,7 @@ export default function CartPage() {
         <span>Subtotal</span>
         <span className="font-semibold text-gold-light">{ugx(subtotal)}</span>
       </div>
-      <p className="mt-1 text-sm text-muted">Delivery is added at checkout, based on your area.</p>
+      <p className="mt-1 text-sm text-muted">Delivery fee is agreed with Josephine on WhatsApp after you order.</p>
       <Link href="/checkout" className="btn btn-pink mt-6 w-full">Checkout</Link>
     </div>
   );

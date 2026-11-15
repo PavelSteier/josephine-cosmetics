@@ -7,7 +7,7 @@ import { useCart } from "@/components/cart";
 import { normalizePhone, ugx } from "@/lib/format";
 import { checkCode, checkLoyalty, placeOrder } from "./actions";
 
-type Zone = { id: number; name: string; fee: number; note: string; upcountry: boolean };
+type Zone = { id: number; name: string; note: string; upcountry: boolean };
 
 export function CheckoutForm({ zones, loyaltyEvery }: { zones: Zone[]; loyaltyEvery: number }) {
   const { items, subtotal, ready, remove } = useCart();
@@ -50,7 +50,7 @@ export function CheckoutForm({ zones, loyaltyEvery }: { zones: Zone[]; loyaltyEv
     if (code && subtotal > 0) applyCode(code.code);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subtotal]);
-  const total = subtotal - discount + (zone?.fee ?? 0);
+  const total = subtotal - discount;
 
   useEffect(() => {
     const p = normalizePhone(phone);
@@ -138,7 +138,7 @@ export function CheckoutForm({ zones, loyaltyEvery }: { zones: Zone[]; loyaltyEv
             <option value="">Choose your area…</option>
             {zones.map((z) => (
               <option key={z.id} value={z.id}>
-                {z.name} – {ugx(z.fee)}
+                {z.name}
               </option>
             ))}
           </select>
@@ -210,8 +210,8 @@ export function CheckoutForm({ zones, loyaltyEvery }: { zones: Zone[]; loyaltyEv
               <dd>−{ugx(discount)}</dd>
             </div>
           )}
-          <div className="flex justify-between"><dt>Delivery</dt><dd>{zone ? ugx(zone.fee) : "Choose area"}</dd></div>
-          <div className="flex justify-between pt-2 text-lg font-semibold text-gold-light"><dt>Total</dt><dd>{ugx(total)}</dd></div>
+          <div className="flex justify-between pt-2 text-lg font-semibold text-gold-light"><dt>Total for items</dt><dd>{ugx(total)}</dd></div>
+          <p className="pt-1 text-xs text-muted">🛵 Delivery fee is not included – Josephine agrees it with you on WhatsApp.</p>
         </dl>
         <div className="mt-4 flex gap-2">
           <input

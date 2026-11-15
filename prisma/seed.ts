@@ -12,12 +12,11 @@ const categories = [
   ["wigs", "Wigs"],
 ] as const;
 
-// PLACEHOLDER prices – Josephine sets the real ones in Admin → Delivery
+// Delivery areas (no fixed prices – the delivery fee is agreed per order on WhatsApp)
 const zones = [
-  { name: "Kampala Central", fee: 5000, note: "Boda boda, often same day", upcountry: false },
-  { name: "Kampala suburbs (Ntinda, Kansanga, Najjera, Kira…)", fee: 8000, note: "", upcountry: false },
-  { name: "Wakiso / Entebbe / Mukono", fee: 15000, note: "", upcountry: false },
-  { name: "Upcountry (bus / taxi)", fee: 15000, note: "Sent by bus or taxi – pick up at the park in your town", upcountry: true },
+  { name: "Kampala", note: "Boda boda or Faras, often the same day", upcountry: false },
+  { name: "Near Kampala (Wakiso, Entebbe, Mukono…)", note: "", upcountry: false },
+  { name: "Upcountry (bus / taxi)", note: "Sent by bus or taxi – pick up at the park in your town", upcountry: true },
 ];
 
 // DEMO products so the shop isn't empty – delete or edit them in Admin → Products

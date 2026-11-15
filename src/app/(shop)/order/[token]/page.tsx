@@ -84,6 +84,9 @@ export default async function OrderPage({ params, searchParams }: Props) {
               <li>Use reference <strong>{num}</strong> if asked</li>
             </ol>
           )}
+          {order.deliveryFee === null && (
+            <p className="mt-3 text-xs text-muted">This is for the items. Delivery is agreed with you on WhatsApp.</p>
+          )}
           <p className="mt-3 text-xs text-muted">
             After paying, send the confirmation SMS on WhatsApp. Josephine will mark your order as paid.
           </p>
@@ -91,7 +94,7 @@ export default async function OrderPage({ params, searchParams }: Props) {
       )}
       {order.paid && <p className="mt-4 text-center text-sm text-gold-light">✓ Payment received</p>}
       {order.paymentMethod === "CASH" && !order.paid && order.status !== "CANCELLED" && (
-        <p className="card mt-6 p-5 text-sm">💵 Please have <strong className="text-gold-light">{ugx(order.total)}</strong> ready for the rider.</p>
+        <p className="card mt-6 p-5 text-sm">💵 Please have <strong className="text-gold-light">{ugx(order.total)}</strong> ready for the rider{order.deliveryFee === null ? ", plus the delivery fee agreed on WhatsApp" : ""}.</p>
       )}
 
       <section className="card mt-6 p-5 text-sm">
@@ -108,7 +111,7 @@ export default async function OrderPage({ params, searchParams }: Props) {
         <dl className="mt-4 space-y-1 border-t border-line pt-4">
           <div className="flex justify-between"><dt>Subtotal</dt><dd>{ugx(order.subtotal)}</dd></div>
           {order.discount > 0 && <div className="flex justify-between text-pink"><dt>🎁 {order.discountLabel}</dt><dd>−{ugx(order.discount)}</dd></div>}
-          <div className="flex justify-between"><dt>Delivery ({order.zoneName})</dt><dd>{ugx(order.deliveryFee)}</dd></div>
+          <div className="flex justify-between"><dt>Delivery ({order.zoneName})</dt><dd>{order.deliveryFee === null ? "to be agreed" : ugx(order.deliveryFee)}</dd></div>
           <div className="flex justify-between pt-2 text-base font-semibold text-gold-light"><dt>Total</dt><dd>{ugx(order.total)}</dd></div>
         </dl>
         <p className="mt-4 text-muted">Deliver to: <span className="text-cream">{order.address}</span></p>

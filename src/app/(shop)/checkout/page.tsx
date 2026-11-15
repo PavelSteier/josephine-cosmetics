@@ -14,7 +14,7 @@ export default async function CheckoutPage() {
     <div className="mx-auto max-w-2xl pt-8">
       <h1 className="font-display text-3xl text-gold-shine">Checkout</h1>
       <CheckoutForm
-        zones={zones.map((z) => ({ id: z.id, name: z.name, fee: z.fee, note: z.note, upcountry: z.upcountry }))}
+        zones={zones.map((z) => ({ id: z.id, name: z.name, note: z.note, upcountry: z.upcountry }))}
         loyaltyEvery={Number(s.loyaltyEvery) || 5}
       />
     </div>

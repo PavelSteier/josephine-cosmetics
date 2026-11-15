@@ -10,7 +10,7 @@ type OrderLike = {
   paymentMethod: "MOMO" | "CASH";
   subtotal: number;
   discount: number;
-  deliveryFee: number;
+  deliveryFee: number | null;
   total: number;
   items: { name: string; color: string; size: string; qty: number; price: number }[];
 };
@@ -24,7 +24,7 @@ export function orderSummaryText(o: OrderLike): string {
     `Order ${orderNumber(o.id)}`,
     ...lines,
     o.discount ? `Loyalty discount: −${ugx(o.discount)}` : "",
-    `Delivery (${o.zoneName}): ${ugx(o.deliveryFee)}`,
+    `Delivery (${o.zoneName}): ${o.deliveryFee === null ? "to be agreed" : ugx(o.deliveryFee)}`,
     `TOTAL: ${ugx(o.total)}`,
     `Payment: ${o.paymentMethod === "MOMO" ? "MTN Mobile Money" : "Cash on delivery"}`,
     `Name: ${o.customerName}`,

@@ -31,6 +31,14 @@ export async function setStatus(orderId: number, status: OrderStatus) {
   revalidatePath("/admin", "layout");
 }
 
+export async function setDeliveryFee(orderId: number, fee: number | null) {
+  await requireAdmin();
+  if (fee !== null && (!Number.isInteger(fee) || fee < 0 || fee > 10_000_000)) return;
+  const o = await db.order.findUniqueOrThrow({ where: { id: orderId } });
+  await db.order.update({ where: { id: orderId }, data: { deliveryFee: fee, total: o.subtotal - o.discount + (fee ?? 0) } });
+  revalidatePath("/admin", "layout");
+}
+
 export async function setPaid(orderId: number, paid: boolean) {
   await requireAdmin();
   await db.order.update({ where: { id: orderId }, data: { paid } });

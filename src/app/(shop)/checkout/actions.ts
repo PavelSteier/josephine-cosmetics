@@ -114,8 +114,8 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
           discount,
           discountLabel,
           discountCode,
-          deliveryFee: zone.fee,
-          total: subtotal - discount + zone.fee,
+          deliveryFee: null, // agreed with the customer on WhatsApp, Josephine can add it in the admin
+          total: subtotal - discount,
           items: {
             create: variants.map((v) => ({
               variantId: v.id,

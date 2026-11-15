@@ -5,7 +5,7 @@ import { db } from "@/lib/db";
 import { displayPhone, orderNumber, ugx, waLink } from "@/lib/format";
 import { previousOrderCount } from "@/lib/loyalty";
 import { getSettings } from "@/lib/settings";
-import { OrderControls } from "./controls";
+import { DeliveryFeeEditor, OrderControls } from "./controls";
 
 export default async function AdminOrderPage({ params }: { params: Promise<{ id: string }> }) {
   const id = Number((await params).id);
@@ -16,6 +16,9 @@ export default async function AdminOrderPage({ params }: { params: Promise<{ id:
   const first = order.customerName.split(" ")[0];
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "";
   const track = `${siteUrl}/order/${order.token}`;
+  // delivery fee is agreed per order; if not saved yet the message has a blank for Josephine to fill in WhatsApp
+  const deliveryLine =
+    order.deliveryFee === null ? `\nDelivery to ${order.zoneName}: ____ UGX` : `\nDelivery: ${ugx(order.deliveryFee)}`;
   const payLine =
     order.paymentMethod === "MOMO" && !order.paid
       ? s.merchantCode
@@ -26,7 +29,7 @@ export default async function AdminOrderPage({ params }: { params: Promise<{ id:
         : "";
 
   const templates: [string, string][] = [
-    ["✅ Confirm order", `Hello ${first}! 💖 Your order ${num} is confirmed.${payLine}\nTrack it here: ${track}\nThank you for shopping with Josephine Cosmetics & Jewelry ✨`],
+    ["✅ Confirm order", `Hello ${first}! 💖 Your order ${num} is confirmed.${deliveryLine}${payLine}\nTrack it here: ${track}\nThank you for shopping with Josephine Cosmetics & Jewelry ✨`],
     ["🛵 Out for delivery", `Hello ${first}! Your order ${num} is on the way 🛵 The rider will call you on ${displayPhone(order.phone)}.`],
     ["💸 Payment received", `Hello ${first}, we have received your payment of ${ugx(order.total)} for order ${num}. Thank you! 💖`],
     ["⭐ Thank you", `Hello ${first}! Thank you for your order ${num} 💖 We hope you love it. Please tag us on Instagram / TikTok!`],
@@ -70,7 +73,7 @@ export default async function AdminOrderPage({ params }: { params: Promise<{ id:
         <dl className="mt-3 space-y-1 border-t border-line pt-3">
           <div className="flex justify-between"><dt>Subtotal</dt><dd>{ugx(order.subtotal)}</dd></div>
           {order.discount > 0 && <div className="flex justify-between text-pink"><dt>{order.discountLabel}</dt><dd>−{ugx(order.discount)}</dd></div>}
-          <div className="flex justify-between"><dt>Delivery</dt><dd>{ugx(order.deliveryFee)}</dd></div>
+          <DeliveryFeeEditor id={order.id} fee={order.deliveryFee} />
           <div className="flex justify-between text-base font-semibold text-gold-light"><dt>Total</dt><dd>{ugx(order.total)}</dd></div>
         </dl>
       </section>

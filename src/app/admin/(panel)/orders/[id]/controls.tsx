@@ -1,9 +1,9 @@
 "use client";
 
 import type { OrderStatus } from "@prisma/client";
-import { useTransition } from "react";
-import { STATUS_LABEL } from "@/lib/format";
-import { setPaid, setStatus } from "../actions";
+import { useState, useTransition } from "react";
+import { STATUS_LABEL, ugx } from "@/lib/format";
+import { setDeliveryFee, setPaid, setStatus } from "../actions";
 
 const FLOW: OrderStatus[] = ["NEW", "CONFIRMED", "OUT_FOR_DELIVERY", "DELIVERED"];
 
@@ -50,5 +50,46 @@ export function OrderControls({ id, status, paid }: { id: number; status: OrderS
         </div>
       </details>
     </section>
+  );
+}
+
+/** Delivery is agreed on WhatsApp; Josephine can note the agreed fee here so the total is right. */
+export function DeliveryFeeEditor({ id, fee }: { id: number; fee: number | null }) {
+  const [editing, setEditing] = useState(false);
+  const [value, setValue] = useState(fee === null ? "" : String(fee));
+  const [pending, start] = useTransition();
+  if (!editing) {
+    return (
+      <div className="flex items-center justify-between">
+        <dt>Delivery</dt>
+        <dd>
+          {fee === null ? <span className="text-muted">to be agreed</span> : ugx(fee)}
+          <button type="button" onClick={() => setEditing(true)} className="ml-2 text-xs text-gold-light underline">
+            {fee === null ? "add" : "change"}
+          </button>
+        </dd>
+      </div>
+    );
+  }
+  const save = (v: number | null) =>
+    start(async () => {
+      await setDeliveryFee(id, v);
+      setEditing(false);
+    });
+  return (
+    <div className="space-y-2 py-1">
+      <dt className="text-muted">Delivery fee agreed with the customer (UGX)</dt>
+      <dd className="flex gap-2">
+        <input value={value} onChange={(e) => setValue(e.target.value)} inputMode="numeric" className="input" placeholder="e.g. 5000" autoFocus />
+        <button type="button" disabled={pending} onClick={() => save(value.trim() ? Number(value.replace(/[^\d]/g, "")) || 0 : null)} className="btn btn-gold shrink-0 px-4">
+          Save
+        </button>
+      </dd>
+      {fee !== null && (
+        <button type="button" disabled={pending} onClick={() => save(null)} className="text-xs text-muted underline">
+          Remove (paid to rider)
+        </button>
+      )}
+    </div>
   );
 }

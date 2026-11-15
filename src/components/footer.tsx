@@ -18,7 +18,7 @@ export function Footer({ s }: { s: Settings }) {
           <p className="mb-2 font-semibold text-gold-light">Help</p>
           <ul className="space-y-2 text-muted">
             <li><Link href="/track" className="hover:text-cream">Track my order</Link></li>
-            <li><Link href="/delivery" className="hover:text-cream">Delivery & prices</Link></li>
+            <li><Link href="/delivery" className="hover:text-cream">Delivery</Link></li>
             <li><Link href="/returns" className="hover:text-cream">Returns & refunds</Link></li>
           </ul>
         </div>

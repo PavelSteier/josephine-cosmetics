@@ -6,7 +6,8 @@ Josephine runs everything from her iPhone at `/admin`.
 
 ## Features
 - Catalogue in 5 categories, colour/size variants, stock (sold-out items hidden automatically)
-- Cart, guest checkout, delivery price per area (Kampala boda/Faras, upcountry bus/taxi)
+- Cart, guest checkout, delivery area (Kampala boda/Faras, upcountry bus/taxi). No fixed delivery prices:
+  the fee is agreed with the customer on WhatsApp; Josephine can note it on the order and the total updates
 - Order page with MoMo instructions (personal number now, MoMoPay merchant code later – just fill it in Settings)
 - "Order on WhatsApp" on every product + "Send order on WhatsApp" after checkout
 - Order tracking (`/track`) with order number + phone
@@ -39,7 +40,7 @@ npm run dev               # http://localhost:3000 – admin at /admin
 4. Add the domain in Vercel → Domains.
 
 ## Still to fill in (placeholders now)
-- Real delivery areas & prices → Admin → Delivery
+- Delivery areas (names only) → Admin → More → Delivery areas
 - Real products & photos → Admin → Products (delete the demo products)
 - Instagram / TikTok links → Admin → Settings
 

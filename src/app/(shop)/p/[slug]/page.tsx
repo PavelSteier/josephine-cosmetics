@@ -91,7 +91,7 @@ export default async function ProductPage({ params }: Props) {
           <div className="mt-8 whitespace-pre-line text-sm leading-relaxed text-muted">{p.description}</div>
         )}
         <ul className="mt-8 space-y-1 text-sm text-muted">
-          <li>🛵 Delivery in Kampala by boda / Faras, upcountry by bus or taxi – <Link href="/delivery" className="underline">prices</Link></li>
+          <li>🛵 Delivery in Kampala by boda / Faras, upcountry by bus or taxi – <Link href="/delivery" className="underline">details</Link></li>
           <li>📱 Pay with MTN Mobile Money or cash on delivery</li>
           <li>↩️ Returns within {s.returnDays} days – <Link href="/returns" className="underline">details</Link></li>
         </ul>

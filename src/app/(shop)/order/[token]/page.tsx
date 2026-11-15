@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ClearCart } from "@/components/clear-cart";
 import { WhatsAppIcon } from "@/components/icons";
 import { db } from "@/lib/db";
 import { displayPhone, orderNumber, STATUS_LABEL, ugx, waLink } from "@/lib/format";
@@ -26,6 +27,7 @@ export default async function OrderPage({ params, searchParams }: Props) {
 
   return (
     <div className="mx-auto max-w-2xl pt-8">
+      {isNew && <ClearCart />}
       {isNew ? (
         <div className="text-center">
           <p className="text-4xl" aria-hidden="true">✨</p>

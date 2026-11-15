@@ -5,12 +5,12 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 import { useCart } from "@/components/cart";
 import { normalizePhone, ugx } from "@/lib/format";
-import { checkLoyalty, placeOrder } from "./actions";
+import { checkCode, checkLoyalty, placeOrder } from "./actions";
 
 type Zone = { id: number; name: string; fee: number; note: string; upcountry: boolean };
 
 export function CheckoutForm({ zones, loyaltyEvery }: { zones: Zone[]; loyaltyEvery: number }) {
-  const { items, subtotal, clear, ready, remove } = useCart();
+  const { items, subtotal, ready, remove } = useCart();
   const router = useRouter();
   const [pending, start] = useTransition();
   const [error, setError] = useState("");
@@ -19,8 +19,37 @@ export function CheckoutForm({ zones, loyaltyEvery }: { zones: Zone[]; loyaltyEv
   const [payment, setPayment] = useState<"MOMO" | "CASH">("MOMO");
   const [loyalty, setLoyalty] = useState<{ eligible: boolean; percent: number } | null>(null);
 
+  const [codeInput, setCodeInput] = useState("");
+  const [code, setCode] = useState<{ code: string; amount: number; label: string } | null>(null);
+  const [codeMsg, setCodeMsg] = useState("");
+  const [checkingCode, startCode] = useTransition();
+
   const zone = zones.find((z) => z.id === zoneId);
-  const discount = loyalty?.eligible ? Math.round((subtotal * loyalty.percent) / 100) : 0;
+  const loyaltyAmount = loyalty?.eligible ? Math.round((subtotal * loyalty.percent) / 100) : 0;
+  const useCode = !!code && code.amount > loyaltyAmount;
+  const discount = useCode ? code.amount : loyaltyAmount;
+
+  function applyCode(value: string) {
+    setCodeMsg("");
+    if (!value.trim()) {
+      setCode(null);
+      return;
+    }
+    startCode(async () => {
+      const r = await checkCode(value, subtotal);
+      if (r.ok) setCode({ code: value, amount: r.amount, label: r.label });
+      else {
+        setCode(null);
+        setCodeMsg(r.error);
+      }
+    });
+  }
+
+  // re-check the code when the cart total changes (e.g. minimum order, % amount)
+  useEffect(() => {
+    if (code && subtotal > 0) applyCode(code.code);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [subtotal]);
   const total = subtotal - discount + (zone?.fee ?? 0);
 
   useEffect(() => {
@@ -55,10 +84,11 @@ export function CheckoutForm({ zones, loyaltyEvery }: { zones: Zone[]; loyaltyEv
         address: String(form.get("address") ?? ""),
         note: String(form.get("note") ?? ""),
         payment,
+        code: code?.code ?? "",
         items: items.map((i) => ({ variantId: i.variantId, qty: i.qty })),
       });
       if (r.ok) {
-        clear();
+        // the cart is emptied on the order page (see ClearCart) so this page doesn't re-render mid-navigation
         router.push(`/order/${r.token}?new=1`);
       } else {
         setError(r.error);
@@ -176,13 +206,30 @@ export function CheckoutForm({ zones, loyaltyEvery }: { zones: Zone[]; loyaltyEv
           <div className="flex justify-between"><dt>Subtotal</dt><dd>{ugx(subtotal)}</dd></div>
           {discount > 0 && (
             <div className="flex justify-between text-pink">
-              <dt>🎁 Loyalty reward ({loyalty?.percent}% off)</dt>
+              <dt>🎁 {useCode ? code.label : `Loyalty reward (${loyalty?.percent}% off)`}</dt>
               <dd>−{ugx(discount)}</dd>
             </div>
           )}
           <div className="flex justify-between"><dt>Delivery</dt><dd>{zone ? ugx(zone.fee) : "Choose area"}</dd></div>
           <div className="flex justify-between pt-2 text-lg font-semibold text-gold-light"><dt>Total</dt><dd>{ugx(total)}</dd></div>
         </dl>
+        <div className="mt-4 flex gap-2">
+          <input
+            value={codeInput}
+            onChange={(e) => setCodeInput(e.target.value.toUpperCase())}
+            placeholder="Discount code"
+            aria-label="Discount code"
+            className="input uppercase"
+          />
+          <button type="button" onClick={() => applyCode(codeInput)} disabled={checkingCode} className="btn btn-outline shrink-0 px-4">
+            {checkingCode ? "…" : "Apply"}
+          </button>
+        </div>
+        {codeMsg && <p className="mt-1 text-xs text-pink">{codeMsg}</p>}
+        {code && !useCode && loyaltyAmount > 0 && (
+          <p className="mt-1 text-xs text-muted">Your loyalty reward is bigger than this code, so we use the loyalty reward.</p>
+        )}
+        {code && useCode && <p className="mt-1 text-xs text-gold-light">✓ Code applied</p>}
         {loyalty && !loyalty.eligible && (
           <p className="mt-3 text-xs text-muted">Every {loyaltyEvery}th order gets {loyalty.percent}% off automatically.</p>
         )}

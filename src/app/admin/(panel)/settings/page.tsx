@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { logout } from "@/app/admin/login/actions";
 import { displayPhone } from "@/lib/format";
 import { getSettings } from "@/lib/settings";
@@ -8,6 +9,10 @@ export default async function SettingsPage() {
   return (
     <div className="space-y-4">
       <h1 className="font-display text-2xl text-gold-light">Settings</h1>
+      <Link href="/admin/delivery" className="card flex items-center justify-between p-4 hover:border-gold">
+        <span>🛵 Delivery areas & prices</span>
+        <span className="text-muted">›</span>
+      </Link>
       <SettingsForm s={{ ...s, whatsappNumber: displayPhone(s.whatsappNumber), momoNumber: displayPhone(s.momoNumber) }} />
       <div className="card p-4 text-sm text-muted">
         <p className="font-semibold text-gold-light">Tip: add the admin to your home screen</p>

@@ -22,6 +22,10 @@ export async function setStatus(orderId: number, status: OrderStatus) {
         }
       }
     }
+    if (restock && order.discountCode) {
+      // give the code use back when an order is cancelled (and take it again if un-cancelled)
+      await tx.discountCode.updateMany({ where: { code: order.discountCode }, data: { usedCount: { increment: -restock } } });
+    }
     await tx.order.update({ where: { id: orderId }, data: { status } });
   });
   revalidatePath("/admin", "layout");

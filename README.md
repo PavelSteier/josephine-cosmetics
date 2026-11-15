@@ -11,8 +11,10 @@ Josephine runs everything from her iPhone at `/admin`.
 - "Order on WhatsApp" on every product + "Send order on WhatsApp" after checkout
 - Order tracking (`/track`) with order number + phone
 - Loyalty: 10% off every 5th order (counted by phone number, configurable)
+- Discount codes (% or UGX off, minimum order, max uses, expiry). They don't stack with the loyalty reward – the bigger discount wins
+- Product reviews with stars, "Verified buyer" badge (phone matches a delivered order), published only after Josephine approves
 - Admin (mobile-first, add to iPhone home screen): orders, status, paid, WhatsApp message templates,
-  products with photo upload (resized on the phone), delivery areas, settings
+  products with photo upload (resized on the phone), reviews, discount codes, delivery areas, settings
 - SEO: sitemap, robots, product structured data for Google
 
 ## Tech
@@ -42,4 +44,4 @@ npm run dev               # http://localhost:3000 – admin at /admin
 - Instagram / TikTok links → Admin → Settings
 
 ## Phase 2 ideas
-Discount codes · product reviews · Google Business Profile · Instagram product feed · push notifications for new orders.
+Google Business Profile · Instagram product feed · push notifications for new orders.

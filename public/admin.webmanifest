@@ -1,0 +1,10 @@
+{
+  "name": "Josephine Admin",
+  "short_name": "Josephine",
+  "start_url": "/admin",
+  "scope": "/admin",
+  "display": "standalone",
+  "background_color": "#0c0a0b",
+  "theme_color": "#0c0a0b",
+  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}

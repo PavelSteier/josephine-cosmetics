@@ -7,6 +7,9 @@ import { createSessionValue, SESSION_COOKIE } from "@/lib/auth";
 
 export async function login(_: string | null, form: FormData): Promise<string | null> {
   const expected = process.env.ADMIN_PASSWORD ?? "";
+  if (process.env.NODE_ENV === "production" && (expected.length < 10 || expected === "changeme")) {
+    return "Admin password is not set up safely (ADMIN_PASSWORD must be at least 10 characters).";
+  }
   const given = String(form.get("password") ?? "");
   const a = Buffer.from(given);
   const b = Buffer.from(expected);

@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { logout } from "@/app/admin/login/actions";
 import { displayPhone } from "@/lib/format";
+import { pushEnabled } from "@/lib/push";
 import { getSettings } from "@/lib/settings";
+import { PushToggle } from "./push-toggle";
 import { SettingsForm } from "./settings-form";
 
 export default async function SettingsPage() {
@@ -9,6 +11,7 @@ export default async function SettingsPage() {
   return (
     <div className="space-y-4">
       <h1 className="font-display text-2xl text-gold-light">Settings</h1>
+      <PushToggle enabled={pushEnabled()} />
       <Link href="/admin/delivery" className="card flex items-center justify-between p-4 hover:border-gold">
         <span>🛵 Delivery areas</span>
         <span className="text-muted">›</span>

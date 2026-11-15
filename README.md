@@ -12,6 +12,7 @@ Josephine runs everything from her iPhone at `/admin`.
 - "Order on WhatsApp" on every product + "Send order on WhatsApp" after checkout
 - Order tracking (`/track`) with order number + phone
 - Loyalty: 10% off every 5th order (counted by phone number, configurable)
+- Push notifications for new orders on Josephine's iPhone (admin added to home screen, iOS 16.4+)
 - Discount codes (% or UGX off, minimum order, max uses, expiry). They don't stack with the loyalty reward – the bigger discount wins
 - Product reviews with stars, "Verified buyer" badge (phone matches a delivered order), published only after Josephine approves
 - Admin (mobile-first, add to iPhone home screen): orders, status, paid, WhatsApp message templates,
@@ -33,10 +34,12 @@ npm run dev               # http://localhost:3000 – admin at /admin
 ```
 
 ## Deploy (free)
+Step-by-step guide (Czech): `docs/SPUSTENI.md`. Guide for Josephine: `docs/JOSEPHINE-GUIDE.md`.
+
 1. Create a Supabase project → Project Settings → Database → copy the pooled (6543) and direct (5432) connection strings.
 2. Import the GitHub repo in Vercel, set the env vars from `.env.example`.
    The `build` script runs `prisma migrate deploy` automatically.
-3. Once: run `npm run seed` locally against the production `DATABASE_URL` (use `SEED_DEMO=0` for no demo products).
+3. The build runs migrations and creates categories + delivery areas automatically (no demo products).
 4. Add the domain in Vercel → Domains.
 
 ## Still to fill in (placeholders now)
@@ -45,4 +48,4 @@ npm run dev               # http://localhost:3000 – admin at /admin
 - Instagram / TikTok links → Admin → Settings
 
 ## Phase 2 ideas
-Google Business Profile · Instagram product feed · push notifications for new orders.
+Google Business Profile · Instagram product feed.

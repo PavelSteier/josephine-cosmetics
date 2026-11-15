@@ -3,9 +3,10 @@
 import { randomBytes } from "node:crypto";
 import { z } from "zod";
 import { db } from "@/lib/db";
-import { normalizePhone } from "@/lib/format";
+import { normalizePhone, orderNumber, ugx } from "@/lib/format";
 import { codeLabel, evaluateCode } from "@/lib/discounts";
 import { loyaltyApplies, previousOrderCount } from "@/lib/loyalty";
+import { notifyAdmin } from "@/lib/push";
 import { getSettings } from "@/lib/settings";
 
 const schema = z.object({
@@ -46,6 +47,12 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
   // merge duplicate lines
   const qtyByVariant = new Map<number, number>();
   for (const i of d.items) qtyByVariant.set(i.variantId, (qtyByVariant.get(i.variantId) ?? 0) + i.qty);
+
+  // stop one number from blocking stock with many unconfirmed orders
+  const open = await db.order.count({ where: { phone, status: "NEW" } });
+  if (open >= 3) {
+    return { ok: false, error: "You already have orders waiting for confirmation. Please message Josephine on WhatsApp." };
+  }
 
   const [zone, s] = await Promise.all([
     db.deliveryZone.findFirst({ where: { id: d.zoneId, active: true } }),
@@ -128,6 +135,12 @@ export async function placeOrder(input: PlaceOrderInput): Promise<PlaceOrderResu
           },
         },
       });
+    });
+    // awaited so it isn't cut off on serverless hosting; notifyAdmin never throws
+    await notifyAdmin({
+      title: `🛍️ New order ${orderNumber(order.id)} – ${ugx(order.total)}`,
+      body: `${order.customerName} · ${zone.name} · ${d.payment === "MOMO" ? "Mobile Money" : "Cash"}`,
+      url: `/admin/orders/${order.id}`,
     });
     return { ok: true, token: order.token };
   } catch (e) {
